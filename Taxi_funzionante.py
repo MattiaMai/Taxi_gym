@@ -1,3 +1,5 @@
+#è un algoritmo di Q-Learning: https://www.gocoder.one/blog/rl-tutorial-with-openai-gym/
+
 """Import libraries"""
 import gym
 import numpy as np
