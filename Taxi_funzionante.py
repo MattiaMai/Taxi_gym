@@ -10,10 +10,6 @@ from time import sleep
 from matplotlib import animation
 
 #cioa
-
-#ciao2
-
-#ciao ciao
 def run_animation(experience_buffer):
     """Function to run animation"""
     time_lag = 0.05  # Delay (in s) between frames
