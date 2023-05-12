@@ -14,6 +14,8 @@ from matplotlib import animation
 #ciao2
 
 #ciao ciao
+
+#pppp
 def run_animation(experience_buffer):
     """Function to run animation"""
     time_lag = 0.05  # Delay (in s) between frames
