@@ -1,6 +1,11 @@
 #è un algoritmo di Q-Learning: https://www.gocoder.one/blog/rl-tutorial-with-openai-gym/
 
+#PACCHETTI DA IMPORTARE SCRITTI NEL README
+
+#DA IMPLEMENTARE, SALVATAGGIO DEL "CERVELLO" in fomrato h5
+
 """Import libraries"""
+import imageio
 import gym
 import numpy as np
 import matplotlib.pyplot as plt
@@ -9,22 +14,15 @@ from IPython.display import clear_output
 from time import sleep
 from matplotlib import animation
 
-#cioa
-
-#ciao2
-
-#ciao ciao
-
-#pppp
 def run_animation(experience_buffer):
     """Function to run animation"""
     time_lag = 0.05  # Delay (in s) between frames
     for experience in experience_buffer:
         # Plot frame
         clear_output(wait=True)
-        #plt.imshow(experience['frame'])
-        #plt.axis('off')
-        #plt.show()
+        plt.imshow(experience['frame'])
+        plt.axis('off')
+        plt.show()
 
         # Print console output
         print(f"Episode: {experience['episode']}/{experience_buffer[-1]['episode']}")
@@ -35,7 +33,10 @@ def run_animation(experience_buffer):
 
         # Pauze animation
         sleep(time_lag)
-def store_episode_as_gif(experience_buffer, path='./', filename='animation2.gif'):
+def store_episode_as_gif_and_video(experience_buffer):
+    path = './'
+    gifname = 'animation.gif'
+
     """Store episode as gif animation"""
     fps = 5   # Set framew per seconds
     dpi = 30  # Set dots per inch
@@ -46,26 +47,42 @@ def store_episode_as_gif(experience_buffer, path='./', filename='animation2.gif'
     for experience in experience_buffer:
         frames.append(experience['frame'])
 
-    #HO COMMENTATO QUESTE RIGHE DI CODICE PERCHE MI DAVANO PROBLEMI
     # Fix frame size
-    #plt.figure(figsize=(frames[0].shape[1] / dpi, frames[0].shape[0] / dpi), dpi=dpi)
-    #patch = plt.imshow(frames[0])
+    plt.figure(figsize=(frames[0].shape[1] / dpi, frames[0].shape[0] / dpi), dpi=dpi)
+    patch = plt.imshow(frames[0])
     plt.axis('off')
 
     # Generate animation
+    #definisco una funzione all'interno di una funzione
     def animate(i):
-        #patch.set_data(frames[i])
-        x=None
-    #anim = animation.FuncAnimation(plt.gcf(), animate, frames=len(frames), interval=interval)
+        patch.set_data(frames[i])
 
+    anim = animation.FuncAnimation(plt.gcf(), animate, frames=len(frames), interval=interval)
     # Save output as gif
-    #anim.save(path + filename, writer='imagemagick', fps=fps)
+    # anim.save(path + filename, writer='imagemagick', fps=fps)
+    # boh,mi da un warning dove dice che utilizza pillow al posto di pillow
+    anim.save(path + gifname, writer='Pillow', fps=fps)
+
+
+    """Store episode as VIDEO animation"""
+    # Specifica il nome del file video e il percorso di salvataggio
+    video_path = 'video.mp4'
+    # Specifica la durata di ciascun frame nel video (in secondi)
+    frame_duration = 1
+    # Salva i frame nel file video utilizzando imageio
+    with imageio.get_writer(video_path, mode='I', fps=1 / frame_duration) as writer:
+        for frame in frames:
+            writer.append_data(frame)
+    writer.close()
+
+
+
 
 
 
 
 """Initialize and validate the environment"""
-env = gym.make("Taxi-v3", render_mode="rgb_array").env
+env = gym.make("Taxi-v3", render_mode="rgb_array")
 state, _ = env.reset()
 
 # Print dimensions of state and action space
@@ -83,10 +100,10 @@ print("Action mask: {}".format(env.action_mask(state)))
 print("Reward: {}".format(reward))
 
 # Render and plot an environment frame
-#frame = env.render()
-#plt.imshow(frame)
-#plt.axis("off")
-#plt.show()
+frame = env.render()
+plt.imshow(frame)
+plt.axis("off")
+plt.show()
 
 """Simulation with random agent
 epoch = 0
@@ -225,7 +242,6 @@ store_gif = True
 
 for episode in range(1, num_episodes+1):
     # Initialize experience buffer
-    env = gym.make("Taxi-v3", render_mode="human").env
 
     my_env = env.reset()
     state = my_env[0]
@@ -259,9 +275,9 @@ for episode in range(1, num_episodes+1):
     num_epochs += epoch
 
     if store_gif:
-        store_episode_as_gif(experience_buffer)
+        store_episode_as_gif_and_video(experience_buffer)
 
-    env.close()
+
 
 # Run animation and print output
 #run_animation(experience_buffer)
@@ -271,3 +287,4 @@ print("\n")
 print(f"Test results after {num_episodes} episodes:")
 print(f"Mean # epochs per episode: {num_epochs / num_episodes}")
 print(f"Mean # failed drop-offs per episode: {total_failed_deliveries / num_episodes}")
+
