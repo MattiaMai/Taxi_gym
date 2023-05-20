@@ -3,6 +3,7 @@
 #PACCHETTI DA IMPORTARE SCRITTI NEL README
 
 """Importo i pacchetti"""
+
 import imageio
 import gym
 import numpy as np
