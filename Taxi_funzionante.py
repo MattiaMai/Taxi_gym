@@ -3,14 +3,13 @@
 #PACCHETTI DA IMPORTARE SCRITTI NEL README
 
 """Importo i pacchetti"""
-
-import imageio
-import gym
-import numpy as np
-import matplotlib.pyplot as plt
-import random
-from matplotlib import animation
-import pickle
+import imageio # Salva i frame nel file video utilizzando imageio
+import gym #lo utilizzo per creare l'envirmoent taxi
+import numpy as np #lo utilizzo per la gestione dei vettori (in questo caso delle q-table )
+import matplotlib.pyplot as plt #mi serve per fare il plot delle immagini
+import random #lo utilizzo per la scelta casuale dell'azione
+from matplotlib import animation #lo tulizzo per generare l'animazione
+import pickle #lo utilizzo per salvare il file h5
 
 #definisco le dunzioni che mi permettono di fare il run dell'animazione e di salvarla in formato gif e mp4
 #(Non sono fondamentali ai fini dello sviluppo del modello)
@@ -26,7 +25,6 @@ def run_animation(experience_buffer):
         plt.pause(time_lag)
         # Print console output
         print(f"Episode: {experience['episode']}/{experience_buffer[-1]['episode']}")
-        print(f"Epoch: {experience['epoch']}/{experience_buffer[-1]['epoch']}")
         print(f"State: {experience['state']}")
         print(f"Action: {experience['action']}")
         print(f"Reward: {experience['reward']}")
@@ -62,7 +60,6 @@ def store_episode_as_gif_and_video(experience_buffer):
     # boh,mi da un warning dove dice che utilizza pillow al posto di pillow
     anim.save(path + gifname, writer='Pillow', fps=fps)
 
-
     """Salvataggio animazione come video"""
     # Specifica il nome del file video e il percorso di salvataggio
     video_path = 'video.mp4'
@@ -75,6 +72,7 @@ def store_episode_as_gif_and_video(experience_buffer):
     writer.close()
 
 
+
 '''
 POTREI DIVIDERE IL MIO PROGRAMMA IN 2:
 1) TRAINING
@@ -83,7 +81,6 @@ POTREI DIVIDERE IL MIO PROGRAMMA IN 2:
 #1)TRAINING
 """Inizializzare l'environment"""
 env = gym.make("Taxi-v3", render_mode="rgb_array")
-state, _ = env.reset()
 
 # Print delle dimensioni dello stato e dello spazio delle azioni
 print("State space: {}".format(env.observation_space))
@@ -92,6 +89,10 @@ print("Action space: {}".format(env.action_space))
 
 """Training dell'agente"""
 q_table = np.zeros([env.observation_space.n, env.action_space.n])
+'''
+guarda: https://www.gymlibrary.dev/environments/toy_text/taxi/
+per avere informazioni per quanto riguarda observationstape e actionspace di gym
+'''
 
 # Hyperparameters
 alpha = 0.1  # Learning rate
@@ -99,14 +100,12 @@ gamma = 1.0  # Discount rate
 epsilon = 0.1  # Exploration rate
 num_episodes = 10000  # Numero di episodi
 
-# Output for plots
+# Output for plot of rewards
 cum_rewards = np.zeros([num_episodes])
-total_epochs = np.zeros([num_episodes])
 
 for episode in range(1, num_episodes + 1):
     # Reset environment
     state, info = env.reset()
-    epoch = 0
     num_failed_dropoffs = 0
     done = False
     cum_reward = 0
@@ -122,13 +121,23 @@ for episode in range(1, num_episodes + 1):
             #random exploration
             action = env.action_space.sample()  # Sample random action (exploration)
         else:
-            #selected exploratione
+            #exploitation ("sfruttamento")
             action = np.argmax(q_table[state])  # Select best known action (exploitation)
 
         #alla fine di questo if avro scelto la mia azione in base all'exploration rate
         next_state, reward, done, _, info = env.step(action)
+        # dalla documentazione gym:
+        # -1 per step unless other reward is triggered.
+        # +20 delivering passenger.
+        # -10 executing “pickup” and “drop-off” actions illegally.
 
-        cum_reward += reward
+        #next_state: Rappresenta lo stato successivo dopo aver eseguito l'azione nell'ambiente. Questo valore indica la situazione corrente dell'agente dopo aver effettuato l'azione.
+        #reward: Indica la ricompensa ottenuta dall'agente per aver eseguito l'azione nello stato corrente. Questa ricompensa può essere positiva, negativa o nulla a seconda delle regole dell'ambiente e delle prestazioni dell'agente.
+        #terminated (o done): È un valore booleano che indica se l'episodio è terminato o meno. Se terminated è True, significa che l'episodio è concluso e l'agente ha raggiunto uno stato terminale o ha soddisfatto una condizione di terminazione specifica. In caso contrario, terminated è False, indicando che l'episodio continua.
+        #truncated (o _): È un valore booleano che può essere utilizzato per indicare se l'episodio è stato troncato o limitato in qualche modo. Questo può significare che l'episodio ha raggiunto un limite massimo di passi o che l'ambiente ha imposto una limitazione sulla durata dell'episodio.
+        #info: Questo valore contiene informazioni aggiuntive sull'esito dell'azione, come dati diagnostici o dettagli specifici dell'ambiente. Tuttavia, questo valore è opzionale e può non essere restituito da tutte le implementazioni di un ambiente specifico.
+
+        cum_reward += reward #mi serve solo per il grafico finale, ai fini dell'algoritmo è inutile
 
         old_q_value = q_table[state, action]
         next_max = np.max(q_table[next_state])
@@ -141,10 +150,8 @@ for episode in range(1, num_episodes + 1):
             num_failed_dropoffs += 1
 
         state = next_state
-        epoch += 1
 
-        total_epochs[episode - 1] = epoch
-        cum_rewards[episode - 1] = cum_reward
+        cum_rewards[episode - 1] = cum_reward #questa parte di codice mi serve per fare il plot finale dei rewards
 
     if episode % 100 == 0:
         print(f"Episode #: {episode}")
@@ -160,7 +167,7 @@ print("===Training completed.===\n")
 
 #FINE FASE TRAINING (il programma training si conclude qui)
 
-#faccio i vari plot della convergenza e dell'epoch
+#faccio il plot della convergenza
 # Plot reward convergence
 plt.title("Cumulative reward per episode")
 plt.xlabel("Episode")
@@ -168,19 +175,12 @@ plt.ylabel("Cumulative reward")
 plt.plot(cum_rewards)
 plt.show()
 
-# Plot epoch convergence
-plt.title("# epochs per episode")
-plt.xlabel("Episode")
-plt.ylabel("# epochs")
-plt.plot(total_epochs)
-plt.show()
 
 
 #2)TESTING
 """Test della performance della policy dopo la fase di training"""
-num_epochs = 0
 total_failed_deliveries = 0
-num_episodes = 1
+num_episodes = 1 #inserire un altro numero se si vogliono effettuare più di un test
 experience_buffer = []
 store_gif = True #ponilo =False se non lo voglio salvare
 
@@ -188,7 +188,6 @@ for episode in range(1, num_episodes+1):
     # Initialize experience buffer
     my_env = env.reset()
     state = my_env[0]
-    epoch = 1
     num_failed_deliveries =0
     cum_reward = 0
     done = False
@@ -203,6 +202,17 @@ for episode in range(1, num_episodes+1):
     while not done:
         action = np.argmax(q_table_trained[state])
         state, reward, done, _, _ = env.step(action)
+        # i reward presi dalla documentazione gym:
+        # -1 per step unless other reward is triggered.
+        # +20 delivering passenger.
+        # -10 executing “pickup” and “drop-off” actions illegally.
+
+        # next_state: Rappresenta lo stato successivo dopo aver eseguito l'azione nell'ambiente. Questo valore indica la situazione corrente dell'agente dopo aver effettuato l'azione.
+        # reward: Indica la ricompensa ottenuta dall'agente per aver eseguito l'azione nello stato corrente. Questa ricompensa può essere positiva, negativa o nulla a seconda delle regole dell'ambiente e delle prestazioni dell'agente.
+        # terminated (o done): È un valore booleano che indica se l'episodio è terminato o meno. Se terminated è True, significa che l'episodio è concluso e l'agente ha raggiunto uno stato terminale o ha soddisfatto una condizione di terminazione specifica. In caso contrario, terminated è False, indicando che l'episodio continua.
+        # truncated: È un valore booleano che può essere utilizzato per indicare se l'episodio è stato troncato o limitato in qualche modo. Questo può significare che l'episodio ha raggiunto un limite massimo di passi o che l'ambiente ha imposto una limitazione sulla durata dell'episodio.
+        # info: Questo valore contiene informazioni aggiuntive sull'esito dell'azione, come dati diagnostici o dettagli specifici dell'ambiente. Tuttavia, questo valore è opzionale e può non essere restituito da tutte le implementazioni di un ambiente specifico.
+
         cum_reward += reward
 
         if reward == -10:
@@ -212,17 +222,14 @@ for episode in range(1, num_episodes+1):
         experience_buffer.append({
             'frame': env.render(),
             'episode': episode,
-            'epoch': epoch,
             'state': state,
             'action': action,
             'reward': cum_reward
             }
         )
 
-        epoch += 1
 
     total_failed_deliveries += num_failed_deliveries
-    num_epochs += epoch
 
     if store_gif:
         store_episode_as_gif_and_video(experience_buffer)
@@ -235,7 +242,6 @@ run_animation(experience_buffer)
 # Print dei risultati finali
 print("\n")
 print(f"Test results after {num_episodes} episodes:")
-print(f"Mean # epochs per episode: {num_epochs / num_episodes}")
 print(f"Mean # failed drop-offs per episode: {total_failed_deliveries / num_episodes}")
 
 #Fine FASE TESTING
