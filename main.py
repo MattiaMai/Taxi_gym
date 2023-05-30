@@ -28,13 +28,12 @@ def run_animation(experience_buffer):
         print(f"State: {experience['state']}")
         print(f"Action: {experience['action']}")
         print(f"Reward: {experience['reward']}")
-
     plt.close()
 
 
-def store_episode_as_gif_and_video(experience_buffer):
+def store_episode_as_gif_and_video(fname,experience_buffer):
     path = './'
-    gifname = 'animation.gif'
+    gifname = fname
 
     """Salvataggio aniazione come gif"""
     fps = 5   # imposto i frame per secondo
@@ -180,13 +179,13 @@ plt.show()
 #2)TESTING
 """Test della performance della policy dopo la fase di training"""
 total_failed_deliveries = 0
-num_episodes = 1 #inserire un altro numero se si vogliono effettuare più di un test
-experience_buffer = []
+num_episodes = 2 #inserire un altro numero se si vogliono effettuare più di un test
 store_gif = True #ponilo =False se non lo voglio salvare
 
 for episode in range(1, num_episodes+1):
     # Initialize experience buffer
     my_env = env.reset()
+    experience_buffer = []
     state = my_env[0]
     num_failed_deliveries =0
     cum_reward = 0
@@ -230,9 +229,11 @@ for episode in range(1, num_episodes+1):
 
 
     total_failed_deliveries += num_failed_deliveries
+    filename = "animation"
 
     if store_gif:
-        store_episode_as_gif_and_video(experience_buffer)
+        filename = filename + str(episode) + ".gif"
+        store_episode_as_gif_and_video(filename,experience_buffer)
 
 
 
