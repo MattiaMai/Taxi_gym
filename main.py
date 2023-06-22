@@ -108,8 +108,9 @@ for episode in range(1, num_episodes + 1):
     num_failed_dropoffs = 0
     done = False
     cum_reward = 0
+    epoch = 0
 
-    while not done:
+    while not done and epoch<200000:
         '''
         if random.uniform(0, 1) < epsilon:
         Questo tipo di costrutto viene spesso utilizzato nell'apprendimento per rinforzo (RL) per 
@@ -149,6 +150,7 @@ for episode in range(1, num_episodes + 1):
             num_failed_dropoffs += 1
 
         state = next_state
+        epoch += 1
 
         cum_rewards[episode - 1] = cum_reward #questa parte di codice mi serve per fare il plot finale dei rewards
 
@@ -179,7 +181,7 @@ plt.show()
 #2)TESTING
 """Test della performance della policy dopo la fase di training"""
 total_failed_deliveries = 0
-num_episodes = 2 #inserire un altro numero se si vogliono effettuare più di un test
+num_episodes = 1 #inserire un altro numero se si vogliono effettuare più di un test
 store_gif = True #ponilo =False se non lo voglio salvare
 
 for episode in range(1, num_episodes+1):
@@ -232,7 +234,7 @@ for episode in range(1, num_episodes+1):
     filename = "animation"
 
     if store_gif:
-        filename = filename + str(episode) + ".gif"
+        filename = filename +" episodio "+ str(episode) + ".gif"
         store_episode_as_gif_and_video(filename,experience_buffer)
 
 
