@@ -12,8 +12,8 @@ from gym.envs.toy_text.utils import categorical_sample
 from gym.error import DependencyNotInstalled
 
 
-num_rows = 5
-num_columns = 5
+num_rows = 10
+num_columns = 14
 
 #SI DEVE FAR IN MODO CHE LA SCELTA DELLA MAPPA SIA CONFORME AL NUMERO DI RIGHE O COLONNE INSERITE
 '''
@@ -100,21 +100,26 @@ MAP = [
 ]
 '''
 MAP = [
-    "+---------+",
-    "| : : | : |",
-    "| : |-| : |",
-    "| | | : | |",
-    "| | | |-| |",
-    "| | : | : |",
-    "+---------+",
+    "+---------------------------+",
+    "|-- : : : : : : : : : : : --|",
+    "| : : : : : : : : : : : : : |",
+    "| : ------------- : ----- : |",
+    "| : ----------- : : ----- : |",
+    "| : --------- : : ------- : |",
+    "| : ------- : : --------- : |",
+    "| : ----- : : ----------- : |",
+    "| : ----- : ------------- : |",
+    "| : : : : : : : : : : : : : |",
+    "|-- : : : : : : : : : : : --|",
+    "+---------------------------+",
 ]
 #si deve scegliere la dimensione in modo conforme alle righe e colonne inserite
-WINDOW_SIZE = (550, 350) #voglio un algoritmo che mi seleziona la risuoluzione adatta
+#WINDOW_SIZE = (550, 350) #voglio un algoritmo che mi seleziona la risuoluzione adatta
 #WINDOW_SIZE = (750, 550) #FANNO USCIRE UNA 7x7 senza linee
 #WINDOW_SIZE = (900, 750) #10x14 quasi normale
 #WINDOW_SIZE = (900, 700) #QUASI
 #WINDOW_SIZE = (900, 650) #SOLO UNA
-#WINDOW_SIZE = (900, 600) #funzione 10x14
+WINDOW_SIZE = (900, 600) #funzione 10x14
 #LA FORMULA SEGRETA E (circa) (x,(x*2)//3)
 
 

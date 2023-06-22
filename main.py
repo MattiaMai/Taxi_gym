@@ -151,8 +151,10 @@ for episode in range(1, num_episodes + 1):
 
         state = next_state
         epoch += 1
-
+        #print(str(epoch))
         cum_rewards[episode - 1] = cum_reward #questa parte di codice mi serve per fare il plot finale dei rewards
+
+    print(f"Episode #: {episode}")
 
     if episode % 100 == 0:
         print(f"Episode #: {episode}")
