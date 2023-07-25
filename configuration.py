@@ -1,9 +1,4 @@
-'''
-Configuration: abstract class containing the configuration reader
-@author: Stefano Marrone
-'''
-
-import ConfigParser
+from configparser import ConfigParser
 
 class Configuration():
     def __init__(self,inifile):
