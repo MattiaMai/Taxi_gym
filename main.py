@@ -71,7 +71,6 @@ def store_episode_as_gif_and_video(fname,experience_buffer):
     writer.close()
 
 
-
 '''
 POTREI DIVIDERE IL MIO PROGRAMMA IN 2:
 1) TRAINING
@@ -94,10 +93,17 @@ per avere informazioni per quanto riguarda observationstape e actionspace di gym
 '''
 
 # Hyperparameters
+"""
 alpha = 0.1  # Learning rate
 gamma = 1.0  # Discount rate
 epsilon = 0.1  # Exploration rate
 num_episodes = 10000  # Numero di episodi
+"""
+alpha = 0.8
+gamma=0.5
+epsilon=0.2
+num_episodes=10000
+num_epochs= 200000
 
 # Output for plot of rewards
 cum_rewards = np.zeros([num_episodes])
@@ -110,7 +116,7 @@ for episode in range(1, num_episodes + 1):
     cum_reward = 0
     epoch = 0
 
-    while not done and epoch<200000:
+    while not done and epoch<num_epochs:
         '''
         if random.uniform(0, 1) < epsilon:
         Questo tipo di costrutto viene spesso utilizzato nell'apprendimento per rinforzo (RL) per 
@@ -143,6 +149,8 @@ for episode in range(1, num_episodes + 1):
         next_max = np.max(q_table[next_state])
 
         new_q_value = (1 - alpha) * old_q_value + alpha * (reward + gamma * next_max)
+        #Questa scrittura è del tutto equivalente al codice di q learning descritto nella tesi
+        #new_q_value=old_q_value+ alpha*(reward + gamma* next_max - old_q_value)
 
         q_table[state, action] = new_q_value
 
@@ -176,7 +184,9 @@ plt.title("Cumulative reward per episode")
 plt.xlabel("Episode")
 plt.ylabel("Cumulative reward")
 plt.plot(cum_rewards)
-plt.show()
+plt.savefig('cum_rewards.jpg', format='jpg', dpi=300) #salvo il grafico dei rewards in un'immagine
+#plt.show() #commento plotshow per rendere tutto più server-frinedly
+
 
 
 
@@ -233,6 +243,7 @@ for episode in range(1, num_episodes+1):
 
 
     total_failed_deliveries += num_failed_deliveries
+
     filename = "animation"
 
     if store_gif:
@@ -242,7 +253,7 @@ for episode in range(1, num_episodes+1):
 
 
 #Avvio dell'animazione
-run_animation(experience_buffer)
+#run_animation(experience_buffer) #commenta l'animazione per rendere tutto più server-friendly
 
 # Print dei risultati finali
 print("\n")

@@ -12,8 +12,8 @@ from gym.envs.toy_text.utils import categorical_sample
 from gym.error import DependencyNotInstalled
 
 
-num_rows = 10
-num_columns = 14
+num_rows = 5
+num_columns = 5
 
 #SI DEVE FAR IN MODO CHE LA SCELTA DELLA MAPPA SIA CONFORME AL NUMERO DI RIGHE O COLONNE INSERITE
 '''
@@ -64,6 +64,34 @@ MAP = [
     "|-- : : : : : : : : : : : --|",
     "+---------------------------+",
 ]
+MAP = [
+    "+---------------------------+",
+    "| : : : : : : : : : : : : : |",
+    "| : : : : : : : : : : : : : |",
+    "| : ||||||||||||| : ||||| : |",
+    "| : ||||||||||| : : ||||| : |",
+    "| : ||||||||| : : ||||||| : |",
+    "| : ||||||| : : ||||||||| : |",
+    "| : ||||| : : ||||||||||| : |",
+    "| : ||||| : ||||||||||||| : |",
+    "| : : : : : : : : : : : : : |",
+    "| : : : : : : : : : : : : : |",
+    "+---------------------------+",
+]
+MAP = [
+    "+---------------------------+",
+    "| : : : : : : : : : : : : : |",
+    "| : : : : : : : : : : : : : |",
+    "| : | | | | | | | : | | | : |",
+    "| : | | | | | | : : | | | : |",
+    "| : | | | | | : : | | | | : |",
+    "| : | | | | : : | | | | | : |",
+    "| : | | | : : | | | | | | : |",
+    "| : | | | : | | | | | | | : |",
+    "| : : : : : : : : : : : : : |",
+    "| : : : : : : : : : : : : : |",
+    "+---------------------------+",
+]
 
 5x5
 MAP = [
@@ -98,29 +126,37 @@ MAP = [
     "| : : : : | | |",
     "+-------------+",
 ]
-'''
+
 MAP = [
     "+---------------------------+",
-    "|-- : : : : : : : : : : : --|",
     "| : : : : : : : : : : : : : |",
-    "| : ------------- : ----- : |",
-    "| : ----------- : : ----- : |",
-    "| : --------- : : ------- : |",
-    "| : ------- : : --------- : |",
-    "| : ----- : : ----------- : |",
-    "| : ----- : ------------- : |",
     "| : : : : : : : : : : : : : |",
-    "|-- : : : : : : : : : : : --|",
+    "| : ||||||||||||| : ||||| : |",
+    "| : ||||||||||| : : ||||| : |",
+    "| : ||||||||| : : ||||||| : |",
+    "| : ||||||| : : ||||||||| : |",
+    "| : ||||| : : ||||||||||| : |",
+    "| : ||||| : ||||||||||||| : |",
+    "| : : : : : : : : : : : : : |",
+    "| : : : : : : : : : : : : : |",
     "+---------------------------+",
 ]
+'''
+
+MAP = [
+    "+---------+",
+    "| : : | : |",
+    "| : |-| : |",
+    "| | | : | |",
+    "| | | |-| |",
+    "| | : | : |",
+    "+---------+",
+]
 #si deve scegliere la dimensione in modo conforme alle righe e colonne inserite
-#WINDOW_SIZE = (550, 350) #voglio un algoritmo che mi seleziona la risuoluzione adatta
-#WINDOW_SIZE = (750, 550) #FANNO USCIRE UNA 7x7 senza linee
-#WINDOW_SIZE = (900, 750) #10x14 quasi normale
-#WINDOW_SIZE = (900, 700) #QUASI
-#WINDOW_SIZE = (900, 650) #SOLO UNA
-WINDOW_SIZE = (900, 600) #funzione 10x14
-#LA FORMULA SEGRETA E (circa) (x,(x*2)//3)
+WINDOW_SIZE = (550, 350) #funziona 5x5
+#WINDOW_SIZE = (750, 550) #funziona 7x7
+#WINDOW_SIZE = (900, 600) #funziona 10x14
+#LA FORMULA SEGRETA E (circa) (x,(x*2)/3)
 
 
 
@@ -132,8 +168,8 @@ class TaxiEnv(Env):
 
     def __init__(self, render_mode: Optional[str] = None):
         self.desc = np.asarray(MAP, dtype="c")
-        print(self.desc)
-        print(self.desc[0,0])
+        #print(self.desc)
+        #print(self.desc[0,0])
         #CREAZIONE DI POSIZIONI CASUALE PER LE CASELLE COLORATE
         coppie = list()
         while len(coppie) < 4:
@@ -145,7 +181,7 @@ class TaxiEnv(Env):
                 if self.desc[x+1,(2*y)+1]==b" ": #E piu facile da vedere che da spiegare, fai la print di self.desc
                     coppie.append(coppia)
 
-        print(coppie)
+        #print(coppie)
 
         #self.locs = locs = [(0, 0), (0, 4), (4, 0), (4, 3)]
         self.locs = locs = coppie
@@ -153,8 +189,6 @@ class TaxiEnv(Env):
 
         num_states = num_rows*num_columns*5*4 #5=possibili posizioni passeggero, 4=possibili posizioni albergo
 
-        #num_rows = 6
-        #num_columns = 6
         max_row = num_rows - 1
         max_col = num_columns - 1
         self.initial_state_distrib = np.zeros(num_states)
