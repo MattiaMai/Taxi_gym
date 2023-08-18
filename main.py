@@ -1,3 +1,13 @@
+import sys
+from configuration import RoobokartLearnerConfiguration
+
+
+
+
+
+
+
+
 #è un algoritmo di Q-Learning: https://www.gocoder.one/blog/rl-tutorial-with-openai-gym/
 
 #PACCHETTI DA IMPORTARE SCRITTI NEL README
@@ -6,69 +16,31 @@
 import imageio # Salva i frame nel file video utilizzando imageio
 import gym #lo utilizzo per creare l'envirmoent taxi
 import numpy as np #lo utilizzo per la gestione dei vettori (in questo caso delle q-table )
-import matplotlib.pyplot as plt #mi serve per fare il plot delle immagini
 import random #lo utilizzo per la scelta casuale dell'azione
 from matplotlib import animation #lo tulizzo per generare l'animazione
 import pickle #lo utilizzo per salvare il file h5
 
-#definisco le dunzioni che mi permettono di fare il run dell'animazione e di salvarla in formato gif e mp4
-#(Non sono fondamentali ai fini dello sviluppo del modello)
-def run_animation(experience_buffer):
-    """Funzione che lancia l'animazione"""
-    time_lag = 0.4  # Delay (in s) between frames
-    for experience in experience_buffer:
-        # Plot del frame
-        plt.imshow(experience['frame'])
-        plt.axis('off')
-        plt.show(block=False)
-        # Pausa animazione
-        plt.pause(time_lag)
-        # Print console output
-        print(f"Episode: {experience['episode']}/{experience_buffer[-1]['episode']}")
-        print(f"State: {experience['state']}")
-        print(f"Action: {experience['action']}")
-        print(f"Reward: {experience['reward']}")
-    plt.close()
+def learn():
+    #todo
+    pass
+
+def test():
+    #todo
+    pass
+
+modes = {
+    'learn': learn,
+    'test': test
+}
+
+if __name__ == '__main__':
+    if len(sys.argv) >= 3:
+        mode = sys.argv[1]
+        configuration_filename = sys.argv[2]
+        config = RoobokartLearnerConfiguration(configuration_filename)
+        modes[mode]()
 
 
-def store_episode_as_gif_and_video(fname,experience_buffer):
-    path = './'
-    gifname = fname
-
-    """Salvataggio aniazione come gif"""
-    fps = 5   # imposto i frame per secondo
-    dpi = 30  # imposto i dots per inch
-    interval = 50  # intervallo tra i frames (in ms)
-
-    frames = []
-    for experience in experience_buffer:
-        frames.append(experience['frame'])
-
-    # Fix frame size
-    plt.figure(figsize=(frames[0].shape[1] / dpi, frames[0].shape[0] / dpi), dpi=dpi)
-    patch = plt.imshow(frames[0])
-    plt.axis('off')
-
-    # Generate animation
-    def animate(i):
-        patch.set_data(frames[i])
-
-    anim = animation.FuncAnimation(plt.gcf(), animate, frames=len(frames), interval=interval)
-    # Salvo l'output come gif
-    # anim.save(path + filename, writer='imagemagick', fps=fps)
-    # boh,mi da un warning dove dice che utilizza pillow al posto di pillow
-    anim.save(path + gifname, writer='Pillow', fps=fps)
-
-    """Salvataggio animazione come video"""
-    # Specifica il nome del file video e il percorso di salvataggio
-    video_path = 'video.mp4'
-    # Specifica la durata di ciascun frame nel video (in secondi)
-    frame_duration = 1
-    # Salva i frame nel file video utilizzando imageio
-    with imageio.get_writer(video_path, mode='I', fps=1 / frame_duration) as writer:
-        for frame in frames:
-            writer.append_data(frame)
-    writer.close()
 
 
 '''

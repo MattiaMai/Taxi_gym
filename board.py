@@ -1,35 +1,23 @@
-from metaclasses import Singleton
-
-class Board():
+class Board:
     def __init__(self):
         self.board = dict()
 
-    def get(self,key):
+    def get(self, key):
         return self.board[key]
 
-    def put(self,key,value):
+    def put(self, key, value):
         self.board[key] = value
 
-    def merge(self,dic):
+    def merge(self, dic):
         self.board.update(dic)
 
-    def mergeBoard(self,dic):
+    def board_merge(self, dic):
         self.board.update(dic.board)
 
     def size(self):
         return len(self.board.keys())
 
-
-class Blackboard(Board, metaclass=Singleton):
-    def __init__(self):
-        super().__init__()
-
-
-class Configuration(Board, metaclass=Singleton):
-    def __init__(self):
-        super().__init__()
-
-
+#todo: define the blackboard as a way to share environments, etc.
 
 class AbstractBoardFactory():
     def __init__(self):
@@ -47,47 +35,47 @@ class AbstractBoardFactory():
             'km': self.km
         }
 
-    def km(self,val):
+    def km(self, val):
         temp = float(val) * 1000
         return temp
 
-    def years(self,yrs):
+    def years(self, yrs):
         temp = 365 * float(yrs)
         temp = self.days(temp)
         return temp
 
-    def kmh(self,kmh):
+    def kmh(self, kmh):
         temp = float(kmh) / 3.6
         return temp
 
-    def days(self,dys):
+    def days(self, dys):
         temp = 24 * float(dys)
         temp = self.hours(temp)
         return temp
 
-    def bools(self,str):
+    def bools(self, str):
         temp = str == 'True'
         return temp
 
-    def mins(self,dys):
+    def mins(self, dys):
         temp = 60 * float(dys)
         return temp
 
-    def split(self,value):
+    def split(self, value):
         index = value.rfind(',')
-        return value[0:index], value[index+1:]
+        return value[0:index], value[index + 1:]
 
-    def hours(self,hrs):
+    def hours(self, hrs):
         temp = float(hrs) * 3600
         return temp
 
-    def process(self,value):
+    def process(self, value):
         vals = self.split(value)
         f = self.mapping[vals[-1]]
         retval = f(vals[0])
         return retval
 
-    def processable(self,value):
+    def processable(self, value):
         val, func = self.split(value)
         found = False
         try:
@@ -96,17 +84,17 @@ class AbstractBoardFactory():
             pass
         return found
 
-    def tolist(self,value):
+    def tolist(self, value):
         retval = value.split(',')
         return retval
 
-    def loadSection(self,reader,s):
+    def loadSection(self, reader, s):
         temp = dict()
         options = reader.options(s)
         for o in options:
             try:
                 value = reader[s][o]
-                if (self.processable(value)):
+                if self.processable(value):
                     value = self.process(value)
                 temp['[' + s + ']' + o] = value
             except:

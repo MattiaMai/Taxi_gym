@@ -1,5 +1,6 @@
 import logging
-
+import sys
+import board
 
 class LoggerFactory:
     diction = {
