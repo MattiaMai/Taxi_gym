@@ -1,4 +1,4 @@
-from configparser import ConfigParser
+import configparser
 from board import Board
 from metaclasses import Singleton
 
@@ -6,7 +6,7 @@ from metaclasses import Singleton
 class Configuration(Board, metaclass=Singleton):
     def __init__(self, inifile):
         super().__init__()
-        self.reader = ConfigParser()
+        self.reader = configparser.ConfigParser()
         self.reader.read(inifile)
         self.populate()
 
