@@ -1,4 +1,6 @@
 import sys
+
+from board import Blackboard
 from configuration import RoobokartLearnerConfiguration
 
 
@@ -35,10 +37,16 @@ modes = {
 
 if __name__ == '__main__':
     if len(sys.argv) >= 3:
+        blackboard = Blackboard()
         mode = sys.argv[1]
         configuration_filename = sys.argv[2]
-        config = RoobokartLearnerConfiguration(configuration_filename)
+        configuration = RoobokartLearnerConfiguration(configuration_filename)
+        blackboard.put('configuration', configuration)
+        environment = gym.make(configuration.get('env_name'),render_mode = configuration.get('render_mode'))
+        blackboard.put('environment', environment)
         modes[mode]()
+        print('End of Communication')
+        exit(0)
 
 
 
@@ -50,7 +58,6 @@ POTREI DIVIDERE IL MIO PROGRAMMA IN 2:
 '''
 #1)TRAINING
 """Inizializzare l'environment"""
-env = gym.make("Taxi-v3", render_mode="rgb_array")
 
 # Print delle dimensioni dello stato e dello spazio delle azioni
 print("State space: {}".format(env.observation_space))

@@ -1,3 +1,5 @@
+from metaclasses import Singleton
+
 class Board:
     def __init__(self):
         self.board = dict()
@@ -17,7 +19,10 @@ class Board:
     def size(self):
         return len(self.board.keys())
 
-#todo: define the blackboard as a way to share environments, etc.
+
+class Blackboard(Board, metaclass=Singleton):
+    def __init__(self):
+        super().__init__()
 
 class AbstractBoardFactory():
     def __init__(self):
