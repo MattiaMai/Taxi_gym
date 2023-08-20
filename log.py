@@ -1,6 +1,6 @@
 import logging
 import sys
-import board
+
 
 class LoggerFactory:
     diction = {
@@ -14,39 +14,41 @@ class LoggerFactory:
     @staticmethod
     def setup(configuration):
         temp = configuration.get('logginglevel')
-        lvl = LoggerFactory.diction[temp]
-        logging.basicConfig(filename=logname, filemode='w', level=lvl, format="%(name)s;%(levelname)s;%(message)s")
+        logging_level = LoggerFactory.diction[temp]
+        logging_filename = configuration.get('logfilename')
+        logging.basicConfig(filename=logging_filename, filemode='w', level=logging_level, format="%(asctime)s;%("
+                                                                                                 "levelname)s;%("
+                                                                                                 "name)s;%(message)s")
 
     @staticmethod
     def shutdown():
         logging.shutdown()
 
 
+def internal_logging(msg, func):
+    if not sys.is_finalizing():
+        func(msg)
+
+
 class Loggable:
     def __init__(self, nname):
         self.name = nname
         self.logger = logging.getLogger(nname)
-        self.env = Blackboard().get('enviro')
 
     def getname(self):
         return self.name
 
     def info(self, msg):
-        self.internal(msg, self.logger.info)
+        internal_logging(msg, self.logger.info)
 
     def warning(self, msg):
-        self.internal(msg, self.logger.warning)
+        internal_logging(msg, self.logger.warning)
 
     def critical(self, msg):
-        self.internal(msg, self.logger.critical)
+        internal_logging(msg, self.logger.critical)
 
     def debug(self, msg):
-        self.internal(msg,self.logger.debug)
+        internal_logging(msg, self.logger.debug)
 
     def error(self, msg):
-        self.internal(msg,self.logger.error)
-
-    def internal(self,msg,func):
-        tosend = str(self.env.now) + ';' + msg
-        if not sys.is_finalizing():
-            func(tosend)
+        internal_logging(msg, self.logger.error)

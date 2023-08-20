@@ -1,8 +1,7 @@
 import sys
-
 from board import Blackboard
 from configuration import RoobokartLearnerConfiguration
-
+from log import LoggerFactory, Loggable
 
 
 
@@ -23,6 +22,8 @@ from matplotlib import animation #lo tulizzo per generare l'animazione
 import pickle #lo utilizzo per salvare il file h5
 
 def learn():
+    logger = Loggable('main')
+    logger.info("This is a test")
     #todo
     pass
 
@@ -44,7 +45,9 @@ if __name__ == '__main__':
         blackboard.put('configuration', configuration)
         environment = gym.make(configuration.get('env_name'),render_mode = configuration.get('render_mode'))
         blackboard.put('environment', environment)
+        LoggerFactory.setup(configuration)
         modes[mode]()
+        LoggerFactory.shutdown()
         print('End of Communication')
         exit(0)
 
