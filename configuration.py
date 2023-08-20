@@ -42,17 +42,18 @@ class Configuration(Board, metaclass=Singleton):
 
 class RoobokartLearnerConfiguration(Configuration):
     def populate(self):
-        sections = ['general', 'graphics', 'report', 'brain', 'hyperparameters', 'environment']
+        sections = ['general', 'graphics', 'training', 'testing', 'hyperparameters', 'environment']
         for section in sections:
             temporary_dictionary = self.section_extraction(section)
             self.merge(temporary_dictionary)
         conversion_list = [
             ('fps', int), ('dpi', int), ('interval', int), ('frame_duration', int),
-            ('store_gif', bool), ('epochs', int), ('num_training_episodes', int),
-            ('alpha', float), ('gamma', float), ('epsilon', float),
-            ('num_test_episodes', int), ('num_rows', int), ('num_columns', int),
+            ('store_gif', bool), ('epochs', int), ('alpha', float), ('gamma', float),
+            ('epsilon', float),
+            ('num_testing_episodes', int), ('num_testing_experiments', int),
+            ('num_training_episodes', int), ('num_training_experiments', int),
+            ('num_rows', int), ('num_columns', int),
             ('window_size_x', int), ('window_size_y', int)
         ]
         for key, to_type in conversion_list:
             self.board[key] = to_type(self.board[key])
-        self.board['maps'] = self.board['maps'].split(',')
