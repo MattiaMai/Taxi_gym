@@ -52,3 +52,4 @@ def train():
         log_episode(episode)
     brain_dump(q_table)
     reward_plot(cum_rewards, configuration.get('reward_outfile'), configuration.get('dpi'))
+    #todo: got to log in the out csv file the quantitative information (also missed delivery)
