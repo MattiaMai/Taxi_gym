@@ -2,6 +2,19 @@
 import matplotlib.pyplot as plt
 
 
+# Plot reward convergence
+def reward_plot(cum_rewards, file_name, dpi_value):
+    plt.title("Cumulative reward per episode")
+    plt.xlabel("Episode")
+    plt.ylabel("Cumulative reward")
+    plt.plot(cum_rewards)
+    plt.savefig(file_name, format='jpg', dpi=dpi_value)
+
+
+
+
+
+
 # definisco le dunzioni che mi permettono di fare il run dell'animazione e di salvarla in formato gif e mp4
 def run_animation(experience_buffer):
     """Funzione che lancia l'animazione"""
