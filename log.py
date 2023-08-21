@@ -13,9 +13,9 @@ class LoggerFactory:
 
     @staticmethod
     def setup(configuration):
-        temp = configuration.get('logginglevel')
+        temp = configuration.get('logging_level')
         logging_level = LoggerFactory.diction[temp]
-        logging_filename = configuration.get('logfilename')
+        logging_filename = configuration.get('log_filename')
         logging.basicConfig(filename=logging_filename, filemode='w', level=logging_level, format="%(asctime)s;%("
                                                                                                  "levelname)s;%("
                                                                                                  "name)s;%(message)s")
