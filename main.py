@@ -6,11 +6,14 @@ from training import train
 from testing import test
 import gym
 
-
 modes = {
     'train': train,
     'test': test
 }
+
+# todo: writing the testing function
+# todo: writing the mutation mechanism for the maps
+# todo: moving from the current situation to the experiment one
 
 
 if __name__ == '__main__':
@@ -20,7 +23,7 @@ if __name__ == '__main__':
         configuration_filename = sys.argv[2]
         configuration = RoobokartLearnerConfiguration(configuration_filename)
         blackboard.put('configuration', configuration)
-        environment = gym.make(configuration.get('env_name'),render_mode = configuration.get('render_mode'))
+        environment = gym.make(configuration.get('env_name'), render_mode=configuration.get('render_mode'))
         blackboard.put('environment', environment)
         LoggerFactory.setup(configuration)
         logger = Loggable('main')
@@ -33,41 +36,25 @@ if __name__ == '__main__':
 
 
 
-
-
-
-### FROM HERE ##########
-
-# Output for plot of rewards
-'''
-
-
-'''
-
-
-
-
-
-
-#2)TESTING
+# 2)TESTING
 """Test della performance della policy dopo la fase di training"""
 total_failed_deliveries = 0
-num_episodes = 1 #inserire un altro numero se si vogliono effettuare più di un test
-store_gif = True #ponilo =False se non lo voglio salvare
+num_episodes = 1  # inserire un altro numero se si vogliono effettuare più di un test
+store_gif = True  # ponilo =False se non lo voglio salvare
 
-for episode in range(1, num_episodes+1):
+for episode in range(1, num_episodes + 1):
     # Initialize experience buffer
     my_env = env.reset()
     experience_buffer = []
     state = my_env[0]
-    num_failed_deliveries =0
+    num_failed_deliveries = 0
     cum_reward = 0
     done = False
 
-    #carico il file h5 (il mio cervello)
-    file='taxi_brain.h5'
+    # carico il file h5 (il mio cervello)
+    file = 'taxi_brain.h5'
     fr = open(file, 'rb')
-    q_table_trained= pickle.load(fr)
+    q_table_trained = pickle.load(fr)
     fr.close()
     print(f"brain {file} loaded \n")
 
@@ -97,26 +84,23 @@ for episode in range(1, num_episodes+1):
             'state': state,
             'action': action,
             'reward': cum_reward
-            }
+        }
         )
-
 
     total_failed_deliveries += num_failed_deliveries
 
     filename = "animation"
 
     if store_gif:
-        filename = filename +" episodio "+ str(episode) + ".gif"
-        store_episode_as_gif_and_video(filename,experience_buffer)
+        filename = filename + " episodio " + str(episode) + ".gif"
+        store_episode_as_gif_and_video(filename, experience_buffer)
 
-
-
-#Avvio dell'animazione
-#run_animation(experience_buffer) #commenta l'animazione per rendere tutto più server-friendly
+# Avvio dell'animazione
+# run_animation(experience_buffer) #commenta l'animazione per rendere tutto più server-friendly
 
 # Print dei risultati finali
 print("\n")
 print(f"Test results after {num_episodes} episodes:")
 print(f"Mean # failed drop-offs per episode: {total_failed_deliveries / num_episodes}")
 
-#Fine FASE TESTING
+# Fine FASE TESTING
