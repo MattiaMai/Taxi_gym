@@ -1,12 +1,11 @@
 from log import Loggable
 from board import Blackboard
-from datetime import datetime
 import pickle
 import glob
-from math import pow
+
+#todo: (future work) manage the reaching of the maximum possible number of brains
 
 
-#todo: manage the reaching of the maximum possible brain number
 
 def last_detected_brain_name():
     conf = Blackboard().get('configuration')
@@ -14,7 +13,6 @@ def last_detected_brain_name():
     files = sorted(glob.glob(pattern), reverse=True)
     retval = None
     if len(files) > 0:
-        # todo: debugging the case where a file already exists
         file_name = files[0]
         prefix = conf.get('brain_folder') + conf.get('brain_name') + '_'
         starting_point = len(prefix)
