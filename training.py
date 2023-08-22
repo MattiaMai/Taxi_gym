@@ -2,7 +2,7 @@ from board import Blackboard
 from log import Loggable
 import numpy as np
 from utils import brain_dump
-from graphics import reward_plot
+from graphics import reward_plot,dropoffs_plot
 import random
 
 
@@ -25,6 +25,7 @@ def train():
     gamma = configuration.get('gamma')
     epsilon = configuration.get('epsilon')
     num_epochs = configuration.get('epochs')
+    failed_drop_offs = np.zeros([num_training_episodes])
     cum_rewards = np.zeros([num_training_episodes])
     for episode in range(0, num_training_episodes):
         # Reset environment
@@ -48,8 +49,10 @@ def train():
                 num_failed_drop_offs += 1
             state = next_state
             epoch += 1
+        failed_drop_offs[episode] = num_failed_drop_offs
         cum_rewards[episode] = cum_reward
         log_episode(episode)
     brain_file_name = brain_dump(q_table)
     reward_plot(cum_rewards)
+    dropoffs_plot(failed_drop_offs)
     #todo: got to log in the out csv file the quantitative information (also missed delivery)

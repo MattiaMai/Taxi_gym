@@ -3,14 +3,23 @@ import matplotlib.pyplot as plt
 from board import Blackboard
 
 # Plot reward convergence
-def reward_plot(cum_rewards):
+
+def reward_plot(reward_data):
+    plot(reward_data,'reward_outfile',"Cumulative reward per episode","Cumulative reward")
+
+def dropoffs_plot(dropdata_data):
+    plot(dropdata_data,'dropoffs_outfile',"Failed dropoffs per episode","Failed Dropoffs")
+
+
+def plot(plotdata, outfilelabel, titlelabel, ylabel):
     configuration = Blackboard().get('configuration')
-    file_name = configuration.get('output_folder') + configuration.get('reward_outfile')
+    file_name = configuration.get('output_folder') + configuration.get(outfilelabel)
     dpi_value = configuration.get('dpi')
-    plt.title("Cumulative reward per episode")
+    plt.clf()
+    plt.title(titlelabel)
     plt.xlabel("Episode")
-    plt.ylabel("Cumulative reward")
-    plt.plot(cum_rewards)
+    plt.ylabel(ylabel)
+    plt.plot(plotdata)
     plt.savefig(file_name, format='jpg', dpi=dpi_value)
 
 
