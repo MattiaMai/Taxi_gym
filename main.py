@@ -1,7 +1,7 @@
 import sys
 from board import Blackboard
 from configuration import RoobokartLearnerConfiguration
-from log import LoggerFactory
+from log import LoggerFactory, Loggable
 from training import train
 from testing import test
 import gym
@@ -23,7 +23,10 @@ if __name__ == '__main__':
         environment = gym.make(configuration.get('env_name'),render_mode = configuration.get('render_mode'))
         blackboard.put('environment', environment)
         LoggerFactory.setup(configuration)
+        logger = Loggable('main')
+        logger.info('Run starting')
         modes[mode]()
+        logger.info('Run ending')
         LoggerFactory.shutdown()
         print('Have a nice day :)')
         exit(0)

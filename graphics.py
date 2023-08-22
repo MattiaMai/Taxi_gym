@@ -1,9 +1,12 @@
 # Needed for plotting the results
 import matplotlib.pyplot as plt
-
+from board import Blackboard
 
 # Plot reward convergence
-def reward_plot(cum_rewards, file_name, dpi_value):
+def reward_plot(cum_rewards):
+    configuration = Blackboard().get('configuration')
+    file_name = configuration.get('output_folder') + configuration.get('reward_outfile')
+    dpi_value = configuration.get('dpi')
     plt.title("Cumulative reward per episode")
     plt.xlabel("Episode")
     plt.ylabel("Cumulative reward")

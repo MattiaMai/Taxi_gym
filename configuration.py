@@ -47,7 +47,7 @@ class RoobokartLearnerConfiguration(Configuration):
             temporary_dictionary = self.section_extraction(section)
             self.merge(temporary_dictionary)
         conversion_list = [
-            ('fps', int), ('dpi', int), ('interval', int), ('frame_duration', int),
+            ('brain_name_digits', int), ('fps', int), ('dpi', int), ('interval', int), ('frame_duration', int),
             ('store_gif', bool), ('epochs', int), ('alpha', float), ('gamma', float),
             ('epsilon', float),
             ('num_testing_episodes', int), ('num_testing_experiments', int),

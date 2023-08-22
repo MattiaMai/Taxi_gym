@@ -50,6 +50,6 @@ def train():
             epoch += 1
         cum_rewards[episode] = cum_reward
         log_episode(episode)
-    brain_dump(q_table)
-    reward_plot(cum_rewards, configuration.get('reward_outfile'), configuration.get('dpi'))
+    brain_file_name = brain_dump(q_table)
+    reward_plot(cum_rewards)
     #todo: got to log in the out csv file the quantitative information (also missed delivery)
