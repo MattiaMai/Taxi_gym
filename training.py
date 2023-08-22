@@ -2,8 +2,9 @@ from board import Blackboard
 from log import Loggable
 import numpy as np
 from utils import brain_dump
-from graphics import reward_plot,dropoffs_plot
+from graphics import reward_plot, dropoffs_plot
 import random
+from utils import report_append
 
 
 def log_episode(episode_number):
@@ -55,4 +56,4 @@ def train():
     brain_file_name = brain_dump(q_table)
     reward_plot(cum_rewards)
     dropoffs_plot(failed_drop_offs)
-    #todo: got to log in the out csv file the quantitative information (also missed delivery)
+    report_append('train', brain_file_name, np.average(cum_rewards), np.average(failed_drop_offs))

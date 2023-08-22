@@ -2,9 +2,10 @@ from log import Loggable
 from board import Blackboard
 import pickle
 import glob
+import time
 
-#todo: (future work) manage the reaching of the maximum possible number of brains
 
+# todo: (future work) manage the reaching of the maximum possible number of brains
 
 
 def last_detected_brain_name():
@@ -49,4 +50,12 @@ def brain_dump(qtable):
     logger.info(f"brain saved as {filename}")
     return filename
 
-# def report_append(mode,brain_name,reward,)
+
+def report_append(mode, brain_name, mean_reward, mean_failed):
+    now = time.ctime()
+    line = now + ';' + mode + ';' + brain_name + ';' + str(mean_reward) + ';' + str(mean_failed) + ';\n'
+    directory = Blackboard().get('configuration').get('output_folder')
+    filename = Blackboard().get('configuration').get('report_file')
+    fw = open(directory + filename, 'at')
+    fw.write(line)
+    fw.close()
