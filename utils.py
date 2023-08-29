@@ -50,6 +50,14 @@ def brain_dump(qtable):
     logger.info(f"brain saved as {filename}")
     return filename
 
+def brain_load(filename):
+    logger = Loggable('name')
+    directory = Blackboard().get('configuration').get('brain_folder')
+    fw = open(directory + filename, 'rb')
+    q_table = pickle.load(fw)
+    fw.close()
+    logger.info(f"brain loaded from {filename}")
+    return q_table
 
 def report_append(mode, brain_name, mean_reward, mean_failed):
     now = time.ctime()
