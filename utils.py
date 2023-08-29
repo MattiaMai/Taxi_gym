@@ -59,3 +59,9 @@ def report_append(mode, brain_name, mean_reward, mean_failed):
     fw = open(directory + filename, 'at')
     fw.write(line)
     fw.close()
+
+
+def log_episode(episode_number):
+    logger = Loggable('main')
+    if episode_number % 100 == 0:
+        logger.info(f"Episode #: {episode_number}")
