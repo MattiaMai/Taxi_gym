@@ -1,6 +1,8 @@
 # Needed for plotting the results
 import matplotlib.pyplot as plt
 from board import Blackboard
+from utils import new_gif_name
+
 
 # Plot reward convergence
 
@@ -9,7 +11,6 @@ def reward_plot(reward_data):
 
 def dropoffs_plot(dropdata_data):
     plot(dropdata_data,'dropoffs_outfile',"Failed dropoffs per episode","Failed Dropoffs")
-
 
 def plot(plotdata, outfilelabel, titlelabel, ylabel):
     configuration = Blackboard().get('configuration')
@@ -46,23 +47,19 @@ def run_animation(experience_buffer):
     plt.close()
 
 
-def store_episode_as_gif_and_video(fname,experience_buffer):
-    path = './'
-    gifname = fname
-
-    """Salvataggio aniazione come gif"""
-    fps = 5   # imposto i frame per secondo
-    dpi = 30  # imposto i dots per inch
-    interval = 50  # intervallo tra i frames (in ms)
-
-    frames = []
-    for experience in experience_buffer:
-        frames.append(experience['frame'])
-
-    # Fix frame size
-    plt.figure(figsize=(frames[0].shape[1] / dpi, frames[0].shape[0] / dpi), dpi=dpi)
-    patch = plt.imshow(frames[0])
-    plt.axis('off')
+def render_episode(fname,experience_buffer):
+    configuration = Blackboard().get('configuration')
+    enabling = configuration.get('store_gif')
+    if enabling:
+        fname = configuration.get('output_folder') + new_gif_name()
+        fps = configuration.get('fps')
+        dpi = configuration.get('dpi')
+        interval = configuration.get('interval')
+        frames = list(map(lambda x: x['frame'],experience_buffer))
+        # Fix frame size
+        plt.figure(figsize=(frames[0].shape[1] / dpi, frames[0].shape[0] / dpi), dpi=dpi)
+        patch = plt.imshow(frames[0])
+        plt.axis('off')
 
     # Generate animation
     def animate(i):

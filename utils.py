@@ -39,6 +39,15 @@ def new_brain_name():
     file_name = configuration.get('brain_name') + '_' + hex_brain_number + '.' + configuration.get('brain_name_suffix')
     return file_name
 
+#todo: optimize for removing code duplication
+def new_gif_name():
+    configuration = Blackboard().get('configuration')
+    brain_number = get_last_brain_code() + 1
+    digits = configuration.get('brain_name_digits')
+    hex_brain_number = hex(brain_number)[2:]
+    hex_brain_number = hex_brain_number.rjust(digits, '0')
+    file_name = configuration.get('name_gif') + '_' + hex_brain_number + '.gif'
+    return file_name
 
 def brain_dump(qtable):
     logger = Loggable('name')
