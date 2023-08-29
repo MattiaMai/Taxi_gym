@@ -1,7 +1,9 @@
 # Needed for plotting the results
-import matplotlib.pyplot as plt
 from board import Blackboard
-from utils import new_gif_name
+from utils import new_gif_name, new_video_name
+import imageio # Salva i frame nel file video utilizzando imageio
+import matplotlib.pyplot as plt #mi serve per fare il plot delle immagini
+from matplotlib import animation #lo tulizzo per generare l'animazione
 
 
 # Plot reward convergence
@@ -24,10 +26,6 @@ def plot(plotdata, outfilelabel, titlelabel, ylabel):
     plt.savefig(file_name, format='jpg', dpi=dpi_value)
 
 
-
-
-
-
 # definisco le dunzioni che mi permettono di fare il run dell'animazione e di salvarla in formato gif e mp4
 def run_animation(experience_buffer):
     """Funzione che lancia l'animazione"""
@@ -47,11 +45,14 @@ def run_animation(experience_buffer):
     plt.close()
 
 
-def render_episode(fname,experience_buffer):
+#todo: extend and fix from configuration for the video
+
+
+def render_episode(experience_buffer):
     configuration = Blackboard().get('configuration')
     enabling = configuration.get('store_gif')
     if enabling:
-        fname = configuration.get('output_folder') + new_gif_name()
+        gifname = configuration.get('output_folder') + new_gif_name()
         fps = configuration.get('fps')
         dpi = configuration.get('dpi')
         interval = configuration.get('interval')
@@ -60,24 +61,11 @@ def render_episode(fname,experience_buffer):
         plt.figure(figsize=(frames[0].shape[1] / dpi, frames[0].shape[0] / dpi), dpi=dpi)
         patch = plt.imshow(frames[0])
         plt.axis('off')
-
-    # Generate animation
-    def animate(i):
-        patch.set_data(frames[i])
-
-    anim = animation.FuncAnimation(plt.gcf(), animate, frames=len(frames), interval=interval)
-    # Salvo l'output come gif
-    # anim.save(path + filename, writer='imagemagick', fps=fps)
-    # boh,mi da un warning dove dice che utilizza pillow al posto di pillow
-    anim.save(path + gifname, writer='Pillow', fps=fps)
-
-    """Salvataggio animazione come video"""
-    # Specifica il nome del file video e il percorso di salvataggio
-    video_path = 'video.mp4'
-    # Specifica la durata di ciascun frame nel video (in secondi)
-    frame_duration = 1
-    # Salva i frame nel file video utilizzando imageio
-    with imageio.get_writer(video_path, mode='I', fps=1 / frame_duration) as writer:
-        for frame in frames:
-            writer.append_data(frame)
-    writer.close()
+        anim = animation.FuncAnimation(plt.gcf(), lambda x: patch.set_data(frames[x]), frames=len(frames), interval=interval)
+        anim.save(gifname, writer='Pillow', fps=fps)
+        videoname = configuration.get('output_folder') + new_video_name()
+        frame_duration = configuration.get('frame_duration')
+        with imageio.get_writer(videoname, mode='I', fps=1 / frame_duration) as writer:
+            for frame in frames:
+                writer.append_data(frame)
+        writer.close()

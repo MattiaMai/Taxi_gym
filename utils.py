@@ -39,7 +39,7 @@ def new_brain_name():
     file_name = configuration.get('brain_name') + '_' + hex_brain_number + '.' + configuration.get('brain_name_suffix')
     return file_name
 
-#todo: optimize for removing code duplication
+#todo: optimize for removing code duplication & video, too
 def new_gif_name():
     configuration = Blackboard().get('configuration')
     brain_number = get_last_brain_code() + 1
@@ -82,3 +82,13 @@ def log_episode(episode_number):
     logger = Loggable('main')
     if episode_number % 100 == 0:
         logger.info(f"Episode #: {episode_number}")
+
+
+def new_video_name():
+    configuration = Blackboard().get('configuration')
+    brain_number = get_last_brain_code() + 1
+    digits = configuration.get('brain_name_digits')
+    hex_brain_number = hex(brain_number)[2:]
+    hex_brain_number = hex_brain_number.rjust(digits, '0')
+    file_name = configuration.get('name_video') + '_' + hex_brain_number + '.mp4'
+    return file_name

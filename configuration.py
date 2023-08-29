@@ -39,6 +39,8 @@ class Configuration(Board, metaclass=Singleton):
             retval = retval.split(',')
         return retval
 
+def mybool(tobool):
+    return tobool == 'True'
 
 class RoobokartLearnerConfiguration(Configuration):
     def populate(self):
@@ -48,7 +50,7 @@ class RoobokartLearnerConfiguration(Configuration):
             self.merge(temporary_dictionary)
         conversion_list = [
             ('brain_name_digits', int), ('fps', int), ('dpi', int), ('interval', int), ('frame_duration', int),
-            ('store_gif', bool), ('epochs', int), ('alpha', float), ('gamma', float),
+            ('store_gif', mybool), ('epochs', int), ('alpha', float), ('gamma', float),
             ('epsilon', float),
             ('num_testing_episodes', int), ('num_testing_experiments', int),
             ('num_training_episodes', int), ('num_training_experiments', int),
