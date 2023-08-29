@@ -11,9 +11,11 @@ from gym import Env, logger, spaces, utils
 from gym.envs.toy_text.utils import categorical_sample
 from gym.error import DependencyNotInstalled
 
+from board import Blackboard
 
-num_rows = 5
-num_columns = 5
+configuration = Blackboard().get('configuration')
+num_rows = configuration.get('num_rows')
+num_columns = configuration.get('num_columns')
 
 #SI DEVE FAR IN MODO CHE LA SCELTA DELLA MAPPA SIA CONFORME AL NUMERO DI RIGHE O COLONNE INSERITE
 '''
@@ -143,17 +145,17 @@ MAP = [
 ]
 '''
 
-MAP = [
-    "+---------+",
-    "| : : | : |",
-    "| : |-| : |",
-    "| | | : | |",
-    "| | | |-| |",
-    "| | : | : |",
-    "+---------+",
-]
+
+def load_map(filename):
+    f = open(filename, "r")
+    retval = list(f.readlines())
+    f.close()
+    return retval
+
+MAP = load_map(configuration.get('map'))
+
 #si deve scegliere la dimensione in modo conforme alle righe e colonne inserite
-WINDOW_SIZE = (550, 350) #funziona 5x5
+WINDOW_SIZE = (configuration.get('window_size_x'), configuration.get('window_size_y')) #funziona 5x5
 #WINDOW_SIZE = (750, 550) #funziona 7x7
 #WINDOW_SIZE = (900, 600) #funziona 10x14
 #LA FORMULA SEGRETA E (circa) (x,(x*2)/3)
