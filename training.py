@@ -1,17 +1,10 @@
 from board import Blackboard
 from log import Loggable
 import numpy as np
-from utils import brain_dump
+from utils import brain_dump, log_episode
 from graphics import reward_plot, dropoffs_plot
 import random
 from utils import report_append
-
-
-def log_episode(episode_number):
-    logger = Loggable('main')
-    if episode_number % 100 == 0:
-        logger.info(f"Episode #: {episode_number}")
-
 
 def train():
     logger = Loggable('main')
