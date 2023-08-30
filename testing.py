@@ -1,6 +1,8 @@
 from board import Blackboard
 from log import Loggable
 import numpy as np
+
+from map import mutate
 from utils import brain_load, log_episode
 from graphics import render_episode
 import random
@@ -15,35 +17,45 @@ def test():
     logger.info("Action space: {}".format(env.action_space))
     # Initializing the q_table: https://www.gymlibrary.dev/environments/toy_text/taxi/ for details
     num_testing_episodes = configuration.get('num_testing_episodes')
-    failed_drop_offs = np.zeros([num_testing_episodes])
-    cum_rewards = np.zeros([num_testing_episodes])
+    failed_drop_offs = []
+    cum_rewards = []
+    num_attempts = []
     brain_file_name = configuration.get('brain_name') + '.' + configuration.get('brain_name_suffix')
     q_table = brain_load(brain_file_name)
-    for episode in range(0, num_testing_episodes):
-        # Reset environment
-        state, info = env.reset()
-        execution_steps = []
-        num_failed_deliveries = 0
-        cum_reward = 0
-        done = False
-        attempts = 0
-        max_attempts = 1000
-        while not done and attempts < max_attempts:
-            action = np.argmax(q_table[state])
-            state, reward, done, _, _ = env.step(action)
-            cum_reward += reward
-            if reward == -10:
-                num_failed_deliveries += 1
-            # Store rendered frame in animation dictionary
-            execution_steps.append({
-                'frame': env.render(),
-                'episode': episode,
-                'state': state,
-                'action': action,
-                'reward': cum_reward
-            })
-            attempts += 1
-        render_episode(execution_steps)
-        failed_drop_offs[episode] = num_failed_deliveries
-        cum_rewards[episode] = cum_reward
-        report_append('test', brain_file_name, np.average(cum_rewards), np.average(failed_drop_offs))
+    num_experiments = configuration.get('num_testing_experiments')
+    for exp in range(0,num_experiments):
+        map = mutate()
+        Blackboard().put('locs',map)
+        for episode in range(0, num_testing_episodes):
+            # Reset environment
+            state, info = env.reset()
+            execution_steps = []
+            num_failed_deliveries = 0
+            cum_reward = 0
+            done = False
+            attempts = 0
+            max_attempts = 1000
+            while not done and attempts < max_attempts:
+                action = np.argmax(q_table[state])
+                state, reward, done, _, _ = env.step(action)
+                cum_reward += reward
+                if reward == -10:
+                    num_failed_deliveries += 1
+                # Store rendered frame in animation dictionary
+                '''execution_steps.append({
+                    'frame': env.render(),
+                    'episode': episode,
+                    'state': state,
+                    'action': action,
+                    'reward': cum_reward
+                })'''
+                attempts += 1
+            num_attempts.append(attempts)
+            failed_drop_offs.append(num_failed_deliveries)
+            cum_rewards.append(cum_reward)
+            #render_episode(execution_steps)
+            #failed_drop_offs[episode] = num_failed_deliveries
+            #cum_rewards[episode] = cum_reward
+    avg = lambda x: sum(x) / len(x)
+    report_append('test', 0, 0, 0, brain_file_name, avg(cum_rewards), avg(failed_drop_offs), avg(num_attempts))
+

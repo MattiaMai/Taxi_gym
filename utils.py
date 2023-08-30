@@ -68,9 +68,9 @@ def brain_load(filename):
     logger.info(f"brain loaded from {filename}")
     return q_table
 
-def report_append(mode, brain_name, mean_reward, mean_failed):
+def report_append(mode, a, g, e, brain_name, mean_reward, mean_failed, mean_epochs):
     now = time.ctime()
-    line = now + ';' + mode + ';' + brain_name + ';' + str(mean_reward) + ';' + str(mean_failed) + ';\n'
+    line = now + ';' + mode + ';' + brain_name + ';' + str(a) + ';' + str(g) + ';' + str(e) + ';' + str(mean_reward) + ';' + str(mean_failed) + ';' + str(mean_epochs) + ';\n'
     directory = Blackboard().get('configuration').get('output_folder')
     filename = Blackboard().get('configuration').get('report_file')
     fw = open(directory + filename, 'at')

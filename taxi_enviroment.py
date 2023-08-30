@@ -12,7 +12,7 @@ from gym.envs.toy_text.utils import categorical_sample
 from gym.error import DependencyNotInstalled
 
 from board import Blackboard
-from map import load_map
+from map import load_map, mutate
 
 configuration = Blackboard().get('configuration')
 
@@ -163,23 +163,13 @@ class TaxiEnv(Env):
 
     def __init__(self, render_mode: Optional[str] = None):
         self.desc = np.asarray(MAP, dtype="c")
-        #print(self.desc)
-        #print(self.desc[0,0])
-        #CREAZIONE DI POSIZIONI CASUALE PER LE CASELLE COLORATE
-        coppie = list()
-        while len(coppie) < 4:
-            x = random.randint(0, num_rows-1) #num_rows-1
-            y = random.randint(0, num_columns-1) #num_columns-1
-            coppia = (x, y)
-            if coppia not in coppie: #spezzo l'if per rendere tutto piu chiaro
-                #if self.desc[x + 1, (2 * y) + 1] != b"-" MODIFICA NEL CASO IN CUI ESCLUDO ANCHE |
-                if self.desc[x+1,(2*y)+1]==b" ": #E piu facile da vedere che da spiegare, fai la print di self.desc
-                    coppie.append(coppia)
-
-        #print(coppie)
-
-        #self.locs = locs = [(0, 0), (0, 4), (4, 0), (4, 3)]
-        self.locs = locs = coppie
+        b = Blackboard()
+        b.put('map', self.desc)
+        b.put('nrow', num_rows)
+        b.put('ncol', num_columns)
+        locs = mutate()
+        self.locs = locs
+        b.put('locs', self.locs)
         self.locs_colors = [(255, 0, 0), (0, 255, 0), (255, 255, 0), (0, 0, 255)]
 
         num_states = num_rows*num_columns*5*4 #5=possibili posizioni passeggero, 4=possibili posizioni albergo
